@@ -1,0 +1,17 @@
+desc: Creates a VPC for eks
+release: 0.0.1
+categories: 
+   - aws
+   - eks
+   - cloud
+   - public_cloud
+tags:
+   - vpc
+   - eks
+   - private_networking
+   - networking
+   - ed_core
+   - ed_saas
+   - ed
+   - aws
+   - infrastructure
