@@ -1,5 +1,21 @@
+variable "aws_default_region" {
+  default = "us-west-1"
+}
+
+variable "instance_type" {
+  default = "t2.small"
+}
+
+variable "vpc_id" {
+  default = "vpc-08c62f67d9efab21d"
+}
+
+variable "subnet_ids" {
+  default = "subnet-0306784a13f526985,subnet-0a0f43144a1e591c5"
+}
+
 variable "eks_cluster" {
-  default = "dev-env"
+  default = "dev-k8"
 }
 
 variable "eks_min_capacity" {
@@ -7,33 +23,10 @@ variable "eks_min_capacity" {
 }
 
 variable "eks_max_capacity" {
-  default = "2"
+  default = "1"
 }
 
 variable "eks_desired_capacity" {
   default = "1"
 }
 
-variable "eks_instance_type" {
-  default = "t2.small"
-}
-
-variable "availability_zones" {
-  default = "us-west-1a, us-west-1c"
-}
-
-variable "availability_zones_count" {
-  default = 2
-}
-
-variable "aws_default_region" {
-  default = "us-west-1"
-}
-
-variable "subnet_base" {
-  default = "10.15"
-}
-
-variable "vpc_name" {
-  default = "eks_vpc"
-}

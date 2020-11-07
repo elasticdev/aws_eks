@@ -9,27 +9,31 @@ terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate"
 with open(terraform_state_file) as json_file:
     data = json.load(json_file)
 
+results = {}
+
 for resource in data["resources"]:
     for instance in resource["instances"]:
         _type = resource["type"]
         # this is the main category for the terraform template
-        if _type != "aws_vpc": continue
+        if _type != "aws_eks_cluster": continue
+        results = resource["instances"][0]["attributes"]
+        results["_id"] = results["arn"]
+        results["_id"] = "eks-{}".format(results["id"])
 
-        results = {}
-        for _key,_value in resource["instances"][0]["attributes"].iteritems():
-            results[_key] = _value
+        try:
+            region = results.get("arn").split(":")[3]
+        except:
+            region = None
 
-        results["name"] = results["tags"]["Name"]
-        results["vpc_name"] = results["tags"]["Name"]
-        results["vpc"] = results["tags"]["Name"]
-        results["tags"] = [ results["tags"]["Name"] ]
-        results["vpc_id"] = results["id"]
-        results["_id"] = results["id"]
+        if region: results["region"] = region
+
+        # should only be on eks
+        break
 
 results["raw"] = {}
-results["raw"]["terraform"] = data
+#results["raw"]["terraform"] = data
 results["provider"] = "aws"
-results["resource_type"] = "vpc"
+results["resource_type"] = "eks"
 if os.environ.get("AWS_DEFAULT_REGION"): results["region"] = os.environ["AWS_DEFAULT_REGION"]
 
 print '_ed_begin_output'
