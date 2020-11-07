@@ -32,23 +32,23 @@ def run(stackargs):
     env_vars["STATEFUL_ID"] = stateful_id
     env_vars["METHOD"] = "create"
 
-    env_vars["AWS_DEFAULT_REGION"] = stack.aws_default_region
-    env_vars["AVAILABILITY_ZONES"] = stack.availability_zones
-    env_vars["AVAILABILITY_ZONES_COUNT"] = str(len([ zone.strip() for zone in stack.availability_zones.split(",")]))
-    env_vars["SUBNET_BASE"] = stack.subnet_base
-    env_vars["EKS_CLUSTER"] = stack.eks_cluster
+    env_vars["TF_VAR_aws_default_region"] = stack.aws_default_region
+    env_vars["TF_VAR_availability_zones"] = stack.availability_zones
+    env_vars["TF_VAR_availability_zones_count"] = str(len([ zone.strip() for zone in stack.availability_zones.split(",")]))
+    env_vars["TF_VAR_subnet_base"] = stack.subnet_base
+    env_vars["TF_VAR_eks_cluster"] = stack.eks_cluster
 
     env_vars["RESOURCE_TYPE"] = "vpc"
     env_vars["RESOURCE_TAGS"] = [ "vpc", "eks", "aws_eks", stack.vpc_name, stack.aws_default_region]
 
-    os_template_vars = [ "AWS_DEFAULT_REGION",
-                         "VPC_NAME", 
-                         "SUBNET_BASE", 
-                         "EKS_CLUSTER", 
-                         "AVAILABILITY_ZONES_COUNT", 
-                         "AVAILABILITY_ZONES" ]
+    #os_template_vars = [ "AWS_DEFAULT_REGION",
+    #                     "VPC_NAME", 
+    #                     "SUBNET_BASE", 
+    #                     "EKS_CLUSTER", 
+    #                     "AVAILABILITY_ZONES_COUNT", 
+    #                     "AVAILABILITY_ZONES" ]
 
-    env_vars["OS_TEMPLATE_VARS"] = ",".join(os_template_vars)
+    #env_vars["OS_TEMPLATE_VARS"] = ",".join(os_template_vars)
 
     inputargs = {"insert_env_vars":stack.insert_env_vars}
     inputargs["env_vars"] = json.dumps(env_vars)

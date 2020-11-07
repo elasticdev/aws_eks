@@ -1,5 +1,5 @@
 variable "availability_zones" {
-  default = "us-west-1a, us-west-1c"
+  default = "us-west-1a,us-west-1c"
 }
 
 variable "availability_zones_count" {
