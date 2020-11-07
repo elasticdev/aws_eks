@@ -9,6 +9,9 @@ def run(stackargs):
     stack.parse.add_required(key="vpc_name")
     stack.parse.add_required(key="eks_cluster")
 
+    # docker image to execute terraform with
+    stack.parse.add_optional(key="docker_exec_env",default="elasticdev/terraform-run-env")
+
     stack.parse.add_optional(key="insert_env_vars",default='["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]')
     stack.parse.add_optional(key="aws_default_region",default="us-west-1")
     stack.parse.add_optional(key="availability_zones",default='us-west-1a,us-west-1c')
@@ -49,6 +52,14 @@ def run(stackargs):
     #                     "AVAILABILITY_ZONES" ]
 
     #env_vars["OS_TEMPLATE_VARS"] = ",".join(os_template_vars)
+
+    env_vars["USE_DOCKER"] = True
+    env_vars["DOCKER_EXEC_ENV"] = stack.docker_exec_env
+
+    docker_env_fields_keys = env_vars.keys()
+    docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
+    docker_env_fields_keys.append("AWS_SECRET_ACCESS_KEY")
+    docker_env_fields_keys.remove("METHOD")
 
     inputargs = {"insert_env_vars":stack.insert_env_vars}
     inputargs["env_vars"] = json.dumps(env_vars)
