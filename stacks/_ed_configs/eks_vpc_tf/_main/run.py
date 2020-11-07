@@ -34,7 +34,7 @@ def run(stackargs):
 
     env_vars["AWS_DEFAULT_REGION"] = stack.aws_default_region
     env_vars["AVAILABILITY_ZONES"] = stack.availability_zones
-    env_vars["AVAILABILITY_ZONES_COUNT"] = str(len(stack.availability_zones))
+    env_vars["AVAILABILITY_ZONES_COUNT"] = str(len([ zone.strip() for zone in stack.availability_zones.split(",")]))
     env_vars["SUBNET_BASE"] = stack.subnet_base
     env_vars["EKS_CLUSTER"] = stack.eks_cluster
 
