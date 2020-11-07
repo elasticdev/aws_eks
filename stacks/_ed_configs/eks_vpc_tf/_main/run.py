@@ -11,7 +11,7 @@ def run(stackargs):
 
     stack.parse.add_optional(key="insert_env_vars",default='["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]')
     stack.parse.add_optional(key="aws_default_region",default="us-west-1")
-    stack.parse.add_optional(key="availability_zones",default=["us-west-1a", "us-west-1c"])
+    stack.parse.add_optional(key="availability_zones",default='us-west-1a,us-west-1c')
     stack.parse.add_optional(key="subnet_base",default="10.14")
 
     # Add execgroup
@@ -33,7 +33,7 @@ def run(stackargs):
     env_vars["METHOD"] = "create"
 
     env_vars["AWS_DEFAULT_REGION"] = stack.aws_default_region
-    env_vars["AVAILABILITY_ZONES"] = ",".join(stack.availability_zones)
+    env_vars["AVAILABILITY_ZONES"] = stack.availability_zones
     env_vars["AVAILABILITY_ZONES_COUNT"] = str(len(stack.availability_zones))
     env_vars["SUBNET_BASE"] = stack.subnet_base
     env_vars["EKS_CLUSTER"] = stack.eks_cluster
