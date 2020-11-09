@@ -56,10 +56,12 @@ def run(stackargs):
     env_vars["USE_DOCKER"] = True
     env_vars["DOCKER_EXEC_ENV"] = stack.docker_exec_env
 
-    docker_env_fields_keys = env_vars.keys()
-    docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
-    docker_env_fields_keys.append("AWS_SECRET_ACCESS_KEY")
-    docker_env_fields_keys.remove("METHOD")
+    _docker_env_fields_keys = env_vars.keys()
+    _docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
+    _docker_env_fields_keys.append("AWS_SECRET_ACCESS_KEY")
+    _docker_env_fields_keys.remove("METHOD")
+
+    env_vars["DOCKER_ENV_FIELDS"] = ",".join(_docker_env_fields_keys)
 
     inputargs = {"insert_env_vars":stack.insert_env_vars}
     inputargs["env_vars"] = json.dumps(env_vars)
