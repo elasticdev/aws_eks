@@ -39,7 +39,7 @@ def run(stackargs):
     env_vars["EKS_CLUSTER"] = stack.eks_cluster
 
     env_vars["RESOURCE_TYPE"] = "vpc"
-    env_vars["RESOURCE_TAGS"] = [ "vpc", "eks", "aws_eks", stack.vpc_name, stack.aws_default_region]
+    env_vars["RESOURCE_TAGS"] = "{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.vpc_name, stack.aws_default_region)
 
     os_template_vars = [ "AWS_DEFAULT_REGION",
                          "VPC_NAME", 
