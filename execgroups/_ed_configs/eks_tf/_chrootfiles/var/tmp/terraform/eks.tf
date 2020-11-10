@@ -7,9 +7,9 @@ module "eks" {
   node_groups = {
     eks_nodes = {
       instance_type    = var.instance_type
-      desired_capacity = var.eks_desired_capacity
-      max_capacity     = var.eks_max_capacity
-      min_capacity     = var.eks_min_capacity
+      desired_capacity = tonumber(var.eks_desired_capacity)
+      max_capacity     = tonumber(var.eks_max_capacity)
+      min_capacity     = tonumber(var.eks_min_capacity)
     }
   }
 
