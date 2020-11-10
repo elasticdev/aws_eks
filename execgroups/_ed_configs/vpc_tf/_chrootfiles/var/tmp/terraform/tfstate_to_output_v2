@@ -1,0 +1,131 @@
+#!/usr/bin/env python
+
+import os
+import json
+#from time import sleep
+from ed_helper_publisher.utilities import print_json
+
+terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate")
+
+with open(terraform_state_file) as json_file:
+    data = json.load(json_file)
+
+with open(terraform_state_file) as json_file:
+    raw = json.load(json_file)
+
+# DEBUG - comment out below 
+# raw = None
+
+results = []
+
+parent = None
+vpc_name = None
+vpc_id = None
+
+# Get VPC
+for resource in data["resources"]:
+    for instance in resource["instances"]:
+
+        _type = resource["type"]
+
+        # this is the main category for the terraform template
+        if _type != "aws_vpc": continue
+
+        _results = instance["attributes"]
+
+        try:
+            region = _results.get("arn").split(":")[3]
+        except:
+            region = None
+
+        if region: _results["region"] = region
+
+        vpc_name = _results["tags"]["Name"]
+        vpc_id = _results["id"]
+        parent = vpc_id
+
+        _results["name"] = vpc_name
+        _results["vpc_name"] = vpc_name
+        _results["vpc"] = vpc_name
+        _results["tags"] = [ vpc_name, vpc_id ]
+        _results["vpc_id"] = vpc_id
+        _results["_id"] = vpc_id
+
+        _results["raw"] = {}
+        _results["raw"]["terraform"] = raw
+        _results["provider"] = "aws"
+        _results["resource_type"] = "vpc"
+        
+        if not _results.get("region") and os.environ.get("AWS_DEFAULT_REGION"): 
+            _results["region"] = os.environ["AWS_DEFAULT_REGION"]
+
+        results.append(_results)
+
+        # should be only one vpc
+        break
+
+for resource in data["resources"]:
+    for instance in resource["instances"]:
+        _type = resource["type"]
+        _name = resource["name"]
+        _mode = resource.get("mode")
+
+        # this is the main category for the terraform template
+        if _type != "aws_subnet": continue
+        if _name != "private_prod": continue
+        if _mode != "managed": continue
+
+        _results = instance["attributes"]
+        _results["_id"] = _results["id"]
+        _results["name"] = _results["tags"]["Name"]
+        _results["tags"] = [ _results["tags"]["Name"] ]
+        if parent: _results["parent"] = parent
+        if vpc_name: _results["vpc_name"] = vpc_name
+        if vpc_name: _results["vpc"] = vpc_name
+        if vpc_id: _results["vpc_id"] = vpc_id
+        _results["vpc_id"] = _results["vpc_id"]
+
+        _results["raw"] = {}
+        _results["raw"]["terraform"] = raw
+        _results["provider"] = "aws"
+        _results["resource_type"] = "subnet"
+
+        _availability_zone = _results.get("availablity_zone")
+
+        if _availability_zone: 
+            _results["region"] = _availability_zone[:-1]
+        elif os.environ.get("AWS_DEFAULT_REGION"): 
+            _results["region"] = os.environ["AWS_DEFAULT_REGION"]
+
+        results.append(_results)
+
+print '_ed_begin_output'
+print_json(results)
+print '_ed_end_output'
+
+#{
+#    "attributes": {
+#        "arn": "arn:aws:ec2:us-west-1:818215835445:subnet/subnet-0a0f43144a1e591c5", 
+#        "assign_ipv6_address_on_creation": false, 
+#        "availability_zone": "us-west-1a", 
+#        "availability_zone_id": "usw1-az1", 
+#        "cidr_block": "10.15.64.0/21", 
+#        "id": "subnet-0a0f43144a1e591c5", 
+#        "ipv6_cidr_block": "", 
+#        "ipv6_cidr_block_association_id": "", 
+#        "map_public_ip_on_launch": false, 
+#        "owner_id": "818215835445", 
+#        "tags": {
+#            "Name": "private_prod_az1", 
+#            "kubernetes.io/cluster/dev-k8": "shared"
+#        }, 
+#        "timeouts": null, 
+#        "vpc_id": "vpc-08c62f67d9efab21d"
+#    }, 
+#    "dependencies": [
+#        "module.vpc.aws_vpc.default"
+#    ], 
+#    "index_key": 0, 
+#    "private": "eyJlMmJmYjczMC1lY2FhLTExZTYtOGY4OC0zNDM2M2JjN2M0YzAiOnsiY3JlYXRlIjo2MDAwMDAwMDAwMDAsImRlbGV0ZSI6MTIwMDAwMDAwMDAwMH0sInNjaGVtYV92ZXJzaW9uIjoiMSJ9", 
+#    "schema_version": 1
+#}
