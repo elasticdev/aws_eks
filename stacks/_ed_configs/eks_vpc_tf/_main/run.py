@@ -43,16 +43,8 @@ def run(stackargs):
     env_vars["TF_VAR_eks_cluster"] = stack.eks_cluster
 
     env_vars["RESOURCE_TYPE"] = "vpc"
-    env_vars["RESOURCE_TAGS"] = "{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.vpc_name, stack.aws_default_region)
-
-    #os_template_vars = [ "AWS_DEFAULT_REGION",
-    #                     "VPC_NAME", 
-    #                     "SUBNET_BASE", 
-    #                     "EKS_CLUSTER", 
-    #                     "AVAILABILITY_ZONES_COUNT", 
-    #                     "AVAILABILITY_ZONES" ]
-
-    #env_vars["OS_TEMPLATE_VARS"] = ",".join(os_template_vars)
+    env_vars["RESOURCE_TAGS"] = "eks"
+    #env_vars["RESOURCE_TAGS"] = "{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.vpc_name, stack.aws_default_region)
 
     env_vars["USE_DOCKER"] = True
     env_vars["DOCKER_EXEC_ENV"] = stack.docker_exec_env
