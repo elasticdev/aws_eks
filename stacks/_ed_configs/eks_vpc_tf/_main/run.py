@@ -36,7 +36,7 @@ def run(stackargs):
     env_vars["METHOD"] = "create"
 
     # zones need to include a , and a space
-    env_vars["TF_VAR_availability_zones"] = ", ".join([ zone.strip() for zone in stack.availability.split(",") ])
+    env_vars["TF_VAR_availability_zones"] = ", ".join([ zone.strip() for zone in stack.availability_zones.split(",") ])
     env_vars["TF_VAR_availability_zones_count"] = str(len([ zone.strip() for zone in stack.availability_zones.split(",")]))
     env_vars["TF_VAR_aws_default_region"] = stack.aws_default_region
     env_vars["TF_VAR_subnet_base"] = stack.subnet_base
