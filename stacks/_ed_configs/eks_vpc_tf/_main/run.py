@@ -43,7 +43,6 @@ def run(stackargs):
     env_vars["TF_VAR_eks_cluster"] = stack.eks_cluster
 
     env_vars["RESOURCE_TYPE"] = "vpc"
-    env_vars["RESOURCE_TAGS"] = "eks"
     #env_vars["RESOURCE_TAGS"] = "{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.vpc_name, stack.aws_default_region)
 
     env_vars["USE_DOCKER"] = True
