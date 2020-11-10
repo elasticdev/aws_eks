@@ -1,0 +1,5 @@
+TF_VAR_availability_zones='us-west-1a, us-west-1c'
+TF_VAR_subnet_base=10.14
+TF_VAR_aws_default_region=us-west-1
+TF_VAR_availability_zones_count=2
+TF_VAR_eks_cluster=eks-2-dev
