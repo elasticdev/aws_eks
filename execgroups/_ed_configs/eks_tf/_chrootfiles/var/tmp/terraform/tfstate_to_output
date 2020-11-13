@@ -23,7 +23,7 @@ for resource in data["resources"]:
         if not _name: _name = os.environ.get("K8_NAME")
         if _name: results["name"] = _name
 
-        results["_id"] = results["arn"].replace(":",".")
+        results["_id"] = results["arn"].replace(":","_")
         #results["_id"] = "eks-{}".format(results["id"])
 
         try:
