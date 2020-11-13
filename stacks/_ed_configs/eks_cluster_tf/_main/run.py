@@ -58,6 +58,9 @@ def run(stackargs):
     stateful_id = stack.random_id()
 
     env_vars = {"NAME":stack.eks_cluster}
+    env_vars["K8_NAME"] = stack.eks_cluster
+    env_vars["EKS_NAME"] = stack.eks_cluster
+    env_vars["EKS_CLUSTER"] = stack.eks_cluster
     env_vars["CLOBBER"] = True
     env_vars["VPC_NAME"] = stack.vpc_name
     env_vars["STATEFUL_ID"] = stateful_id
