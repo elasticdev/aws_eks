@@ -9,6 +9,9 @@ terraform_state_file = os.environ.get("TERRAFORM_STATE_FILE","terraform.tfstate"
 with open(terraform_state_file) as json_file:
     data = json.load(json_file)
 
+with open(terraform_state_file) as json_file:
+    raw = json.load(json_file)
+
 results = {}
 
 for resource in data["resources"]:
@@ -38,7 +41,7 @@ for resource in data["resources"]:
         break
 
 results["raw"] = {}
-results["raw"]["terraform"] = data
+results["raw"]["terraform"] = raw
 results["provider"] = "aws"
 results["resource_type"] = "eks"
 
