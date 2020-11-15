@@ -71,8 +71,10 @@ def run(stackargs):
     env_vars["TF_VAR_vpc_id"] = vpc_info["vpc_id"]
     env_vars["TF_VAR_subnet_ids"] = _get_subnet_ids(vpc_info)
 
-    if not env_vars["TF_VAR_subnet_ids"]: 
-        stack.logger.error("subnet_id are not found!")
+    if env_vars["TF_VAR_subnet_ids"] in ["None",None]: 
+        msg = "subnet_id are not found!"
+        stack.logger.error(msg)
+        stack.ehandle.NeedMoreInfo(message=msg)
 
     # zones need to include a , and a space
     env_vars["TF_VAR_eks_min_capacity"] = stack.eks_min_capacity
