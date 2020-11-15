@@ -17,6 +17,8 @@ def _get_subnet_ids(vpc_info):
     
             _results = instance["attributes"]
             subnet_ids.append(_results["id"])
+
+    if not subnet_ids: return 
     
     return ",".join(subnet_ids)
 
@@ -34,7 +36,6 @@ def run(stackargs):
     # docker image to execute terraform with
     stack.parse.add_optional(key="docker_exec_env",default="elasticdev/terraform-run-env")
 
-    stack.parse.add_optional(key="insert_env_vars",default='["AWS_ACCESS_KEY_ID", "AWS_SECRET_ACCESS_KEY"]')
     stack.parse.add_optional(key="aws_default_region",default="us-west-1")
     stack.parse.add_optional(key="eks_min_capacity",default="1")
     stack.parse.add_optional(key="eks_max_capacity",default="2")
@@ -69,11 +70,15 @@ def run(stackargs):
     env_vars["TF_VAR_vpc_id"] = vpc_info["vpc_id"]
     env_vars["TF_VAR_subnet_ids"] = _get_subnet_ids(vpc_info)
 
+    if not env_vars["TF_VAR_subnet_ids"]: 
+        stack.logger.error("subnet_id are not found!")
+
     # zones need to include a , and a space
     env_vars["TF_VAR_eks_min_capacity"] = stack.eks_min_capacity
     env_vars["TF_VAR_eks_max_capacity"] = stack.eks_max_capacity
     env_vars["TF_VAR_eks_desired_capacity"] = stack.eks_desired_capacity
     env_vars["TF_VAR_eks_cluster"] = stack.eks_cluster
+    env_vars["TF_VAR_aws_default_region"] = stack.aws_default_region
 
     env_vars["RESOURCE_TYPE"] = stack.resource_type
     env_vars["RESOURCE_TAGS"] = "{},{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.eks_cluster, stack.vpc_name, stack.aws_default_region)
@@ -83,11 +88,12 @@ def run(stackargs):
     _docker_env_fields_keys = env_vars.keys()
     _docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
     _docker_env_fields_keys.append("AWS_SECRET_ACCESS_KEY")
+    _docker_env_fields_keys.append("AWS_DEFAULT_REGION")
     _docker_env_fields_keys.remove("METHOD")
 
     env_vars["DOCKER_ENV_FIELDS"] = ",".join(_docker_env_fields_keys)
 
-    inputargs = {"insert_env_vars":stack.insert_env_vars}
+    inputargs = {"display":True}
     inputargs["env_vars"] = json.dumps(env_vars)
     inputargs["name"] = stack.vpc_name
     inputargs["stateful_id"] = stateful_id
