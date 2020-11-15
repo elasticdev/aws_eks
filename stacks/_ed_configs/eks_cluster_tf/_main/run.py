@@ -12,7 +12,7 @@ def _get_subnet_ids(vpc_info):
     
             # this is the main category for the terraform template
             if _type != "aws_subnet": continue
-            if _name != "private_prod": continue
+            if _name not in ["private_prod","private"]: continue
             if _mode != "managed": continue
     
             _results = instance["attributes"]
