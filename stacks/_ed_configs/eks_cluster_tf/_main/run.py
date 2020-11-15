@@ -53,6 +53,7 @@ def run(stackargs):
 
     vpc_info = stack.get_resource(name=stack.vpc_name,
                                   resource_type="vpc",
+                                  region=stack.aws_default_region,
                                   must_exists=True)[0]
 
     # Execute execgroup for creating vpc
