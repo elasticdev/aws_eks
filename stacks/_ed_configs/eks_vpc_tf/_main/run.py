@@ -29,8 +29,9 @@ def run(stackargs):
     # Execute execgroup for creating vpc
     stateful_id = stack.random_id()
 
-    env_vars = {"NAME":stack.vpc_name}
+    env_vars = {"NAME":stack.eks_cluster}
     env_vars["CLOBBER"] = True
+    env_vars["EKS_CLUSTER"] = stack.eks_cluster
     env_vars["VPC_NAME"] = stack.vpc_name
     env_vars["STATEFUL_ID"] = stateful_id
     env_vars["METHOD"] = "create"
@@ -57,7 +58,7 @@ def run(stackargs):
 
     inputargs = {"insert_env_vars":stack.insert_env_vars}
     inputargs["env_vars"] = json.dumps(env_vars)
-    inputargs["name"] = stack.vpc_name
+    inputargs["name"] = stack.eks_cluster
     inputargs["stateful_id"] = stateful_id
     stack.vpc_tf.insert(**inputargs)
 
