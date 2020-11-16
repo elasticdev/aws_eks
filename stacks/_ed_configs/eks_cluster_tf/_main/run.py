@@ -1,4 +1,7 @@
-def _get_subnet_ids(vpc_info):
+def _get_subnet_ids(vpc_info,subnet_names=None):
+
+    if not subnet_names:
+        subnet_names = ["private_prod","private"]
 
     data = vpc_info["raw"]["terraform"]
 
@@ -12,8 +15,8 @@ def _get_subnet_ids(vpc_info):
     
             # this is the main category for the terraform template
             if _type != "aws_subnet": continue
-            if _name not in ["private_prod","private"]: continue
             if _mode != "managed": continue
+            if _name not in subnet_names: continue
     
             _results = instance["attributes"]
             subnet_ids.append(_results["id"])
@@ -41,6 +44,7 @@ def run(stackargs):
     stack.parse.add_optional(key="eks_max_capacity",default="2")
     stack.parse.add_optional(key="eks_desired_capacity",default="1")
     stack.parse.add_optional(key="resource_type",default="eks")
+    stack.parse.add_optional(key="subnet_names",default="null")
 
     # Add execgroup
     stack.add_execgroup("elasticdev:::aws_eks::eks_tf")
@@ -69,7 +73,8 @@ def run(stackargs):
     env_vars["METHOD"] = "create"
 
     env_vars["TF_VAR_vpc_id"] = vpc_info["vpc_id"]
-    env_vars["TF_VAR_subnet_ids"] = _get_subnet_ids(vpc_info)
+    env_vars["TF_VAR_subnet_ids"] = _get_subnet_ids(vpc_info,
+                                                    subnet_names=stack.subnet_names)
 
     if env_vars["TF_VAR_subnet_ids"] in ["None",None]: 
         msg = "subnet_id are not found!"
