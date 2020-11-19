@@ -88,6 +88,7 @@ def run(stackargs):
     env_vars["TF_VAR_eks_cluster"] = stack.eks_cluster
     env_vars["TF_VAR_aws_default_region"] = stack.aws_default_region
 
+    env_vars["AWS_DEFAULT_REGION"] = stack.aws_default_region
     env_vars["RESOURCE_TYPE"] = stack.resource_type
     env_vars["RESOURCE_TAGS"] = "{},{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.eks_cluster, stack.vpc_name, stack.aws_default_region)
     env_vars["USE_DOCKER"] = True
@@ -96,15 +97,15 @@ def run(stackargs):
     _docker_env_fields_keys = env_vars.keys()
     _docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
     _docker_env_fields_keys.append("AWS_SECRET_ACCESS_KEY")
-    _docker_env_fields_keys.append("AWS_DEFAULT_REGION")
     _docker_env_fields_keys.remove("METHOD")
 
     env_vars["DOCKER_ENV_FIELDS"] = ",".join(_docker_env_fields_keys)
 
     inputargs = {"display":True}
     inputargs["env_vars"] = json.dumps(env_vars)
-    inputargs["name"] = stack.vpc_name
+    inputargs["name"] = stack.eks_cluster
     inputargs["stateful_id"] = stateful_id
+    inputargs["human_description"] = "Creating EKS {}".format(stack.eks_cluster)
     stack.eks_tf.insert(**inputargs)
 
     return stack.get_results()
