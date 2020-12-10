@@ -45,6 +45,7 @@ def run(stackargs):
     stack.parse.add_optional(key="eks_desired_capacity",default="1")
     stack.parse.add_optional(key="resource_type",default="eks")
     stack.parse.add_optional(key="subnet_names",default="null")
+    stack.parse.add_optional(key="use_docker",default=True,null_allowed=True)
 
     # Add execgroup
     stack.add_execgroup("elasticdev:::aws_eks::eks_tf")
@@ -91,8 +92,8 @@ def run(stackargs):
     env_vars["AWS_DEFAULT_REGION"] = stack.aws_default_region
     env_vars["RESOURCE_TYPE"] = stack.resource_type
     env_vars["RESOURCE_TAGS"] = "{},{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.eks_cluster, stack.vpc_name, stack.aws_default_region)
-    env_vars["USE_DOCKER"] = True
     env_vars["DOCKER_EXEC_ENV"] = stack.docker_exec_env
+    if stack.use_docker: env_vars["use_docker".upper()] = True
 
     _docker_env_fields_keys = env_vars.keys()
     _docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")

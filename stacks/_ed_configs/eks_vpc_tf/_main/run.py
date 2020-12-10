@@ -16,6 +16,7 @@ def run(stackargs):
     stack.parse.add_optional(key="aws_default_region",default="us-west-1")
     stack.parse.add_optional(key="availability_zones",default='us-west-1a,us-west-1c')
     stack.parse.add_optional(key="subnet_base",default="10.14")
+    stack.parse.add_optional(key="use_docker",default=True,null_allowed=True)
 
     # Add execgroup
     stack.add_execgroup("elasticdev:::aws_eks::vpc_tf")
@@ -46,8 +47,8 @@ def run(stackargs):
     env_vars["RESOURCE_TYPE"] = "vpc"
     #env_vars["RESOURCE_TAGS"] = "{},{},{},{},{}".format("vpc","eks", "aws_eks", stack.vpc_name, stack.aws_default_region)
 
-    env_vars["USE_DOCKER"] = True
     env_vars["DOCKER_EXEC_ENV"] = stack.docker_exec_env
+    if stack.use_docker: env_vars["use_docker".upper()] = True
 
     _docker_env_fields_keys = env_vars.keys()
     _docker_env_fields_keys.append("AWS_ACCESS_KEY_ID")
